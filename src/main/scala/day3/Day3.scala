@@ -6,7 +6,7 @@ object Day3 {
   def main(args: Array[String]): Unit = {
 
     // Part1
-    val trees = Source.fromFile("src/main/scala/day3/day3_data")
+    val trees: Int = Source.fromFile("src/main/scala/day3/day3_data")
       .getLines()
       .toSeq
       .zipWithIndex
@@ -17,17 +17,17 @@ object Day3 {
     println(trees)
 
     // Part2
-    val sol = Array((3,1),(1,1),(5,1),(7,1),(1,2)).map(x => {
+    val sol: Int = Array((3,1),(1,1),(5,1),(7,1),(1,2)).map(x => {
       Source.fromFile("src/main/scala/day3/day3_data")
         .getLines()
         .toSeq
-        .zipWithIndex.filter(_._2 != 0)
+        .zipWithIndex
+        .filter(_._2 != 0)
         .filter(_._2 % x._2 == 0)
         .map(s => {
           val pos = ((s._2 / x._2) * x._1) % s._1.length
           if (s._1.charAt(pos) == '#') 1 else 0
         }).sum
-
     }).product
 
     println(sol)
