@@ -13,7 +13,6 @@ object Day6 {
 
     // Part2
     val numbers2 = groups.map(_.split("\n")
-      .map(_.toCharArray)
       .reduceLeft((x,y) =>
         (x.filter(y.contains(_)) ++ y.filter(x.contains(_))).distinct
       ).length
