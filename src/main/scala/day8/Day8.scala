@@ -17,34 +17,10 @@ object Day8 {
     // part1
     println(runProgram(instructionSet.clone(),0,0))
 
-    
+
     // part2
-    var found = false
-    var index = 0
-    var acc = -1
-    while(index < instructionSet.length && !found){
-      val modProgram = instructionSet.clone()
-      val currInstruction = modProgram(index)
-      val result: (Int, Boolean) = currInstruction._1 match {
-        case "jmp" => {
-          modProgram(index) = ("nop", currInstruction._2, currInstruction._3)
-          runProgram(modProgram, 0,0)
-        }
-        case "nop" => {
-          modProgram(index) = ("jmp", currInstruction._2, currInstruction._3)
-          runProgram(modProgram, 0,0)
-        }
-        case _ => (0, false)
-      }
-      found = result._2
-      index += 1
-      if(found) acc = result._1
-    }
-
-    println(acc)
+    println(programReplace(instructionSet, Array.empty, (0,false)))
   }
-
-
 
   /**
    * It runs the program, return true if the program finished correctly or false if an instruction is exectued twice (inifinite loop)
@@ -73,6 +49,28 @@ object Day8 {
             runProgram(instructions, programCounter + 1, acc)
           }
         }
+      }
+    }
+  }
+
+  @tailrec def programReplace(remainingInstructions: Array[(String, Int, Int)], previousInstructions: Array[(String, Int, Int)], result: (Int, Boolean)): (Int, Boolean) = {
+    if(remainingInstructions.isEmpty){
+      result
+    } else {
+      val currInstruction = remainingInstructions.head
+      if(currInstruction._1 != "acc") {
+        val newProgram = currInstruction._1 match {
+          case "jmp" => previousInstructions :+ ("nop", currInstruction._2, currInstruction._3) concat remainingInstructions.tail
+          case "nop" => previousInstructions :+ ("jmp", currInstruction._2, currInstruction._3) concat remainingInstructions.tail
+        }
+        val output = runProgram(newProgram, 0, 0)
+        if (output._2) {
+          programReplace(Array.empty, Array.empty, output)
+        } else {
+          programReplace(remainingInstructions.tail, previousInstructions :+ currInstruction, output)
+        }
+      } else {
+        programReplace(remainingInstructions.tail, previousInstructions :+ currInstruction, (0,false))
       }
     }
   }
