@@ -8,31 +8,22 @@ object Day9 {
     val data = Source.fromFile("src/main/scala/day9/input").getLines().map(_.toLong).toSeq
 
     // part1
-    val v = find(data, 25, -1)
-    println(v)
+     val v1: Long = data.tails
+                    .filter(_.length > 26)
+                    .find(s => {
+                      val seq = s.take(25).combinations(2)
+                      val value = s(25)
+                      !seq.exists(_.sum == value)
+                    }) match {
+                    case Some(value) => value(25)
+                    case None => -1
+                  }
+    println(v1)
 
     //part 2 (not finished yet)
+   val range = data.tails.flatMap(_.inits.find(_.sum == v1)).next().sorted
+    println(range.head + range.last)
 
-  }
-
-
-  def find(numbers: Seq[Long], numInSum: Int, curValue: Long): Long = {
-    if(numbers.length < numInSum){
-      curValue
-    } else {
-      val currNumbers = numbers.slice(0,numInSum)
-      val value = numbers(numInSum)
-
-      val found = for{i <- currNumbers
-          j <- currNumbers
-          if(i != j && j + i == value)} yield value
-
-      if(found.isEmpty){
-        find(Seq.empty, numInSum, value)
-      } else {
-        find(numbers.tail, numInSum, curValue)
-      }
-    }
   }
 
   
