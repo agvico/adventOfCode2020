@@ -1,7 +1,6 @@
 package day9
 
 import scala.io.Source
-import scala.math.Fractional.Implicits.infixFractionalOps
 
 object Day9 {
   def main(args: Array[String]): Unit = {
@@ -23,8 +22,5 @@ object Day9 {
     //part 2 (not finished yet)
    val range = data.tails.flatMap(_.inits.find(_.sum == v1)).next().sorted
     println(range.head + range.last)
-
   }
-
-  
 }
