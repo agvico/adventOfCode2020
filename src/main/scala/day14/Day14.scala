@@ -62,7 +62,6 @@ object Day14 {
     println(memory.map(i => BigInt(i._2)).sum)
   }
 
-
   
   def getMemoryAddresses(mask: String, acc: Seq[Long]): Seq[Long] = {
     mask.find(_ == 'X') match {
