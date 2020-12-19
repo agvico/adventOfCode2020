@@ -16,10 +16,29 @@ class ArithNoPrecedence extends JavaTokenParsers {
 }
 
 
+class ArithPrecedence extends JavaTokenParsers {
+
+  def digit: Parser[Long] = "\\d+".r  ^^ {_.toLong}
+  def sum = "+"
+  def product = "*"
+
+  def E = T ~ rep(product ~ T) ^^ {
+    case d ~ expList => expList.foldLeft(d){ case (exp1,  _ ~ exp2) => exp1 * exp2}
+  } | T
+
+  def T = F ~ rep(sum ~ F) ^^ {
+    case d ~ expList => expList.foldLeft(d){case (exp1, _ ~ exp2) => exp1 + exp2}
+  } | F
+
+  def F:Parser[Long] = "("~E~")" ^^ {case _ ~ exp ~ _ => exp} | digit
+}
+
+
 object Day18 {
   def main(args: Array[String]): Unit = {
     val data = Source.fromFile("src/main/scala/day18/input").getLines().toIndexedSeq
     val parser1 = new ArithNoPrecedence
+    val parser2 = new ArithPrecedence
 
     // Part 1
     println(data.map(str => {
@@ -27,6 +46,11 @@ object Day18 {
     }).sum
     )
 
+    // Part 2
+    println(data.map(str => {
+      parser2.parseAll(parser2.E, str).get
+    }).sum
+    )
   }
 
 }
